@@ -1,18 +1,21 @@
 const express = require('express');
 const axios = require('axios');
 const MemoryCache = require('memory-cache');
+var cors = require('cors')
 
 const app = express();
 const port = 5000;
+app.use(cors())
+
 
 // URL and authorization token, needs to be changed, not working
 const baseURL = 'http://20.244.56.144/test';
 const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiZXhwIjoxNzE1MTQ5OTQ4LCJpYXQiOjE3MTUxNDk2NDgsImlzcyI6IkFmZm9yZG1lZCIsImp0aSI6IjY3YTYxNDQxLWI2ZWItNDRkZC05ZGRjLWY2ZmY5ODU3NGJiMCIsInN1YiI6InV0c2F2LndpbGwud29ya0BnbWFpbC5jb20ifSwiY29tcGFueU5hbWUiOiJnb01hcnQiLCJjbGllbnRJRCI6IjY3YTYxNDQxLWI2ZWItNDRkZC05ZGRjLWY2ZmY5ODU3NGJiMCIsImNsaWVudFNlY3JldCI6ImJSeUJ6R0haa1ByVGJDUGQiLCJvd25lck5hbWUiOiJLdW1hciBVdHNhdiIsIm93bmVyRW1haWwiOiJ1dHNhdi53aWxsLndvcmtAZ21haWwuY29tIiwicm9sbE5vIjoiMjEwNTE5MDMifQ.fVxlGrr9YInSGmpWz3nUuxKu9ixfujJc-7jRjE7dQ5g';
 
-// Store the product data
+// Stores the product data
 const cache = new MemoryCache.Cache();
 
-// Function to call the API and store the data
+// Fn to call the API and store the data
 async function fetchAndStoreData() {
   const companies = ['AMZ', 'FLP', 'SNP', 'MYN', 'AZO'];
   const categories = ['Phone', 'Computer', 'TV', 'Earphone', 'Tablet', 'Charger', 'Mouse', 'Keypad', 'Bluetooth', 'Pendrive', 'Remote', 'Speaker', 'Headset', 'Laptop', 'PC'];
@@ -36,6 +39,18 @@ async function fetchAndStoreData() {
         cache.put(`${category}-${company}`, data);
       } catch (error) {
         console.error(`Error fetching data for ${company}, ${category}:`, error.message);
+        console.log(`Feeding random data: `)
+          const data = {
+            "productName": `${category} 0`,
+            "price": 0,
+            "rating": 0.0,
+            "discount": 0,
+            "availability": "yes",
+            "company": `${company} 0`
+          }
+          cache.put(`${category}-${company}`, data);
+          // categoryProducts.push(...data);
+
       }
     }
   }
@@ -103,6 +118,27 @@ app.get('/categories/:categoryName/products', async (req, res) => {
           categoryProducts.push(...data);
         } catch (error) {
           console.error(`Error fetching data for ${company}, ${categoryName}:`, error.message);
+          console.log(`Feeding random data: `)
+          const data = [{
+            "productName": `${categoryName} 0`,
+            "price": 0,
+            "rating": 0.0,
+            "discount": 0,
+            "availability": "yes",
+            "company": `${company} 0`
+          },
+          {
+            "productName": `${categoryName} 0`,
+            "price": 0,
+            "rating": 0.0,
+            "discount": 0,
+            "availability": "yes",
+            "company": `${company} 0`
+          },
+        ]
+          cache.put(companyKey, data);
+          categoryProducts.push(...data);
+
         }
       }
     }
@@ -115,7 +151,7 @@ app.get('/categories/:categoryName/products', async (req, res) => {
   const maxPage = Math.ceil(totalProducts / n);
 
   if (page < 1 || page > maxPage) {
-    return res.status(400).json({ error: `Invalid page number: ${page}` });
+    return res.status(400).json({ error: `Invalid page number: ${page} max : ${maxPage}` });
   }
 
   const startIndex = (page - 1) * n;
