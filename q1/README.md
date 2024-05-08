@@ -9,4 +9,4 @@ _Submitting it late because of the test API registration and auth issue. Because
 - `npm install`
 - `npm run dev`
 - Setup frontend from question 2
-- [Question 1](https://github.com/uuutsav/21051903/blob/master/q2/top-n-products-frontend/README.md)
+- [Question 2](https://github.com/uuutsav/21051903/blob/master/q2/top-n-products-frontend/README.md)
